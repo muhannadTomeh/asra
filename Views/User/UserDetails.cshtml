@@ -6,12 +6,12 @@
 }
 
 <div class="container mt-4">
-    <h2>@ViewData["Title"]</h2>
+    <h2 class="mb-4">@ViewData["Title"]</h2>
 
     <!-- User Card -->
-    <div class="card mb-4">
+    <div class="card mb-4 shadow-lg">
         <div class="card-header bg-primary text-white">
-            <h4 class="card-title">User Information</h4>
+            <h4 class="card-title"><i class="fas fa-user-circle"></i> User Information</h4>
         </div>
         <div class="card-body">
             <div class="row">
@@ -28,7 +28,14 @@
         </div>
     </div>
 
-    <!-- Back Button -->
-    <a href="@Url.Action("ListUsers", "User")" class="btn btn-secondary">Back to User List</a>
+    <!-- Action Buttons -->
+    <div class="d-flex justify-content-between mt-3">
+        <a href="@Url.Action("ListUsers", "User")" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to User List</a>
+        <a href="@Url.Action("ChangePasswordRequest", "Account")" class="btn btn-warning text-white"><i class="fas fa-key"></i> Change Password</a>
+    </div>
 </div>
 
+<!-- Add Font Awesome for icons (optional) -->
+@section Scripts {
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+}

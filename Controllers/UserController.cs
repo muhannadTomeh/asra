@@ -37,19 +37,16 @@ namespace Asrati.Controllers
             return View(userViewModels);
         }
 
-        // Action to show user details
+        // Action to show user details or current user's details
         [HttpGet]
-        public async Task<IActionResult> UserDetails(string id)
+        public async Task<IActionResult> UserDetails(string id = null)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            id ??= _userManager.GetUserId(User); // Use current user's ID if none is provided
 
-            var user = await _userManager.FindByIdAsync(id);
+            var user = await GetUserDetailsAsync(id);
             if (user == null)
             {
-                return NotFound();
+                return View("NotFound");
             }
 
             var userDetailViewModel = new UserDetailsViewModel
@@ -63,105 +60,10 @@ namespace Asrati.Controllers
             return View(userDetailViewModel);
         }
 
-        // Action to show the Create User form
-        // public IActionResult Create()
-        // {
-        //     return View();
-        // }
-
-        // // Action to handle creating a new user
-        // [HttpPost]
-        // [ValidateAntiForgeryToken]
-        // public async Task<IActionResult> Create(CreateUserViewModel model)
-        // {
-        //     if (ModelState.IsValid)
-        //     {
-        //         var user = new User
-        //         {
-        //             UserName = model.UserName,
-        //             PhoneNumber = model.PhoneNumber
-        //         };
-
-        //         var result = await _userManager.CreateAsync(user, model.Password);
-
-        //         if (result.Succeeded)
-        //         {
-        //             return RedirectToAction(nameof(ListUsers));
-        //         }
-
-        //         foreach (var error in result.Errors)
-        //         {
-        //             ModelState.AddModelError(string.Empty, error.Description);
-        //         }
-        //     }
-
-        //     return View(model);
-        // }
-
-        // Action to show the Edit User form
-        // public async Task<IActionResult> Edit(string id)
-        // {
-        //     var user = await _userManager.FindByIdAsync(id);
-
-        //     if (user == null)
-        //     {
-        //         return NotFound();
-        //     }
-
-        //     var model = new EditUserViewModel
-        //     {
-        //         UserId = user.Id,
-        //         UserName = user.UserName,
-        //         PhoneNumber = user.PhoneNumber
-        //     };
-
-        //     return View(model);
-        // }
-
-        // // Action to handle editing a user
-        // [HttpPost]
-        // [ValidateAntiForgeryToken]
-        // public async Task<IActionResult> Edit(EditUserViewModel model)
-        // {
-        //     if (ModelState.IsValid)
-        //     {
-        //         var user = await _userManager.FindByIdAsync(model.UserId);
-
-        //         if (user == null)
-        //         {
-        //             return NotFound();
-        //         }
-
-        //         user.UserName = model.UserName;
-        //         user.PhoneNumber = model.PhoneNumber;
-
-        //         var result = await _userManager.UpdateAsync(user);
-
-        //         if (result.Succeeded)
-        //         {
-        //             return RedirectToAction(nameof(ListUsers));
-        //         }
-
-        //         foreach (var error in result.Errors)
-        //         {
-        //             ModelState.AddModelError(string.Empty, error.Description);
-        //         }
-        //     }
-
-        //     return View(model);
-        // }
-
-        // Action to show the Delete User confirmation
-        public async Task<IActionResult> Delete(string id)
+        // Helper method to retrieve user details
+        private async Task<User> GetUserDetailsAsync(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
-
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return View(user);
+            return await _userManager.FindByIdAsync(id);
         }
 
         // Action to handle deleting a user
@@ -173,7 +75,7 @@ namespace Asrati.Controllers
 
             if (user == null)
             {
-                return NotFound();
+                return View("NotFound");
             }
 
             var result = await _userManager.DeleteAsync(user);

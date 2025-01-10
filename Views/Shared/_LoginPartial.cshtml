@@ -13,13 +13,17 @@
             </form>
         </li>
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-controller="Account" asp-action="ChangePasswordRequest">Change password request</a>
+            <a class="nav-link text-dark" asp-controller="User" asp-action="UserDetails">My Account</a>
         </li>
     }
     else
     {
         <li class="nav-item">
             <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Login</a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Register</a>
         </li>
     }
 </ul>
