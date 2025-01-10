@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Asrati.ViewModels;
 using Asrati.Models;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace Asrati.Controllers
 {
@@ -63,6 +64,13 @@ namespace Asrati.Controllers
         public async Task<IActionResult> Register(RegisterViewModel model) {
             if (ModelState.IsValid)
             {
+                var existingUser = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == model.PhoneNumber);
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError("PhoneNumber", "The phone number is already in use.");
+                    return View(model);
+                }
+
                 var user = new User { UserName = model.UserName, PhoneNumber = model.PhoneNumber, IsActive = true };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
