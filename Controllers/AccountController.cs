@@ -98,5 +98,86 @@ namespace Asrati.Controllers
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }
+
+        // Change Password Request GET
+        [HttpGet]
+        public IActionResult ChangePasswordRequest()
+        {
+            return View();
+        }
+
+        // Change Password Request POST (to send the reset token)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePasswordRequest(ChangePasswordRequestViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == model.PhoneNumber);
+                if (user != null)
+                {
+                    // Generate the password reset token
+                    var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+
+                    // Send the token to the user (via email or other method)
+                    // You could implement an email sending service here to send the token
+                    // Here we're just redirecting to a change password view with the token for simplicity
+                    return RedirectToAction("ChangePassword", new { token = token });
+                }
+                else
+                {
+                    ModelState.AddModelError("PhoneNumber", "User not found.");
+                }
+            }
+
+            return View(model);
+        }
+
+        // Change Password GET (with Token)
+        [HttpGet]
+        public IActionResult ChangePassword(string token)
+        {
+            if (token == null)
+            {
+                return BadRequest("Invalid token.");
+            }
+
+            var model = new ChangePasswordViewModel { Token = token };
+            return View(model);
+        }
+
+        // Change Password POST (with Token)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == model.PhoneNumber);
+                if (user != null)
+                {
+                    // Reset the user's password using the token
+                    var result = await _userManager.ResetPasswordAsync(user, model.Token, model.NewPassword);
+                    if (result.Succeeded)
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+                    else
+                    {
+                        foreach (var error in result.Errors)
+                        {
+                            ModelState.AddModelError(string.Empty, error.Description);
+                        }
+                    }
+                }
+                else
+                {
+                    ModelState.AddModelError("PhoneNumber", "User not found.");
+                }
+            }
+
+            return View(model);
+        }
+
     }
 }
