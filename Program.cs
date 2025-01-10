@@ -11,7 +11,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
     // Require confirmed phone number
-    options.SignIn.RequireConfirmedPhoneNumber = true;
+    options.SignIn.RequireConfirmedPhoneNumber = false;
 
     // Disable email-related requirements
     options.SignIn.RequireConfirmedEmail = false;
