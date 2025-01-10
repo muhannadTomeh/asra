@@ -1,0 +1,65 @@
+## User-specific files
+.vs/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+## Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+## Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+## .NET Core / .NET 8 specific
+bin/
+obj/
+
+## ASP.NET Core
+wwwroot/
+
+## Npm packages (if using Node.js)
+node_modules/
+
+## JetBrains Rider
+.idea/
+
+## User-specific files for Visual Studio for Mac
+.vscode/
+
+## Files for temporary debugging data
+*.log
+
+## User-specific files for Visual Studio Code
+.vscode/
+.history/
+
+## Rider user-specific config folder
+.idea/
+
+## .NET Core generated files (for example, .user files, .vs files)
+*.user
+*.userosscache
+*.suo
+*.sln.docstates
+
+## Build directories
+build/
+
+## JetBrains Rider Project Settings Folder
+.idea/
+
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+## VS Code
+.vscode/
