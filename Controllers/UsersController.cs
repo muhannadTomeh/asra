@@ -66,13 +66,13 @@ namespace Asrati.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return View("NotFound");
             }
 
             var user = _context.Users.FirstOrDefault(u => u.Id == id);
             if (user == null)
             {
-                return NotFound();
+                return View("NotFound");
             }
 
             return View(user);
@@ -92,8 +92,21 @@ namespace Asrati.Controllers
             {
                 try
                 {
-                    user.UpdatedAt = DateTime.UtcNow;
-                    _context.Update(user);
+                    var existingUser = _context.Users.Find(id);
+                    existingUser.FirstName = user.FirstName;
+                    existingUser.LastName = user.LastName;
+
+                    // Only update password if it's not empty
+                    if (!string.IsNullOrEmpty(user.Password))
+                    {
+                        existingUser.Password = user.Password;  // Ideally, hash the password before saving
+                    }
+
+                    existingUser.Role = user.Role;
+                    existingUser.PhoneNumber = user.PhoneNumber;
+                    existingUser.UpdatedAt = DateTime.UtcNow;
+
+                    _context.Update(existingUser);
                     _context.SaveChanges();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -111,6 +124,7 @@ namespace Asrati.Controllers
             }
             return View(user);
         }
+
 
         // POST: Users/DeleteConfirmed/5
         [HttpPost, ActionName("DeleteConfirmed")]
