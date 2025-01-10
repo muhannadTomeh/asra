@@ -27,13 +27,13 @@ namespace Asrati.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return View("NotFound");
             }
 
             var user = _context.Users.FirstOrDefault(u => u.Id == id);
             if (user == null)
             {
-                return NotFound();
+                return View("NotFound");
             }
 
             return View(user);
@@ -112,25 +112,8 @@ namespace Asrati.Controllers
             return View(user);
         }
 
-        // GET: Users/Delete/5
-        public IActionResult Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var user = _context.Users.FirstOrDefault(u => u.Id == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return View(user);
-        }
-
-        // POST: Users/Delete/5
-        [HttpPost, ActionName("Delete")]
+        // POST: Users/DeleteConfirmed/5
+        [HttpPost, ActionName("DeleteConfirmed")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
@@ -141,6 +124,20 @@ namespace Asrati.Controllers
                 _context.SaveChanges();
             }
             return RedirectToAction(nameof(Index));
+        }
+
+        // POST: Users/ToggleActive/5
+        [HttpPost]
+        public IActionResult ToggleActive(int id)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.Id == id);
+            if (user != null)
+            {
+                user.IsActive = !user.IsActive; // Toggle the active status
+                user.UpdatedAt = DateTime.UtcNow; // Update the `UpdatedAt` timestamp
+                _context.SaveChanges();
+            }
+            return RedirectToAction(nameof(Details), new { id = id }); // Redirect to the details page
         }
 
         private bool UserExists(int id)
