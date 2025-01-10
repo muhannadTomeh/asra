@@ -1,0 +1,37 @@
+@using Asrati.ViewModels.UserViewModel
+@model List<UserListViewModel>  <!-- Correct model declaration to accept a list of UserListViewModel -->
+
+@{
+    ViewData["Title"] = "Users List";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@Html.ValidationSummary(true, "Please fix the following errors:", new { @class = "text-danger" })
+
+<table class="table justify-content-center align-items-center">
+    <thead>
+        <tr>
+            <th>Username</th>
+            <th>Phone Number</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.UserName</td>
+                <td>@user.PhoneNumber</td>
+                <td>
+                    <a href="@Url.Action("Edit", "User", new { id = user.UserId })" class="btn btn-warning">Edit</a>
+                    <form asp-action="Delete" method="post" asp-route-id="@user.UserId" style="display:inline;">
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a class="nav-link text-dark btn btn-primary text-white" asp-controller="Account" asp-action="Register">Create New User</a>

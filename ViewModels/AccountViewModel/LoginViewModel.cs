@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Asrati.ViewModels
+namespace Asrati.ViewModels.AccountViewModel
 {
     public class LoginViewModel
     {

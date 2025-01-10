@@ -1,5 +1,5 @@
-@using Asrati.ViewModels;
-@model LoginViewModel;
+@using Asrati.ViewModels.AccountViewModel
+@model LoginViewModel
 
 @{
     ViewData["Title"] = "Login";
@@ -32,6 +32,6 @@
     <p>Don't have an account? <a href="/Account/Register">Register here</a></p>
 </div>
 
-@section Scripts {
+@* @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+} *@

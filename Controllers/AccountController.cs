@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Asrati.ViewModels;
+using Asrati.ViewModels.AccountViewModel;
 using Asrati.Models;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
