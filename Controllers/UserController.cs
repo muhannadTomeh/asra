@@ -1,11 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using Asrati.Models;
-using Asrati.ViewModels.UserViewModel;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Asrati.ViewModels.UserViewModel;
 
 namespace Asrati.Controllers
 {
@@ -30,10 +30,37 @@ namespace Asrati.Controllers
             {
                 UserId = user.Id,
                 PhoneNumber = user.PhoneNumber,
-                UserName = user.UserName
+                UserName = user.UserName,
+                IsActive = user.IsActive
             }).ToList();
 
             return View(userViewModels);
+        }
+
+        // Action to show user details
+        [HttpGet]
+        public async Task<IActionResult> UserDetails(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var userDetailViewModel = new UserDetailsViewModel
+            {
+                UserId = user.Id,
+                UserName = user.UserName,
+                PhoneNumber = user.PhoneNumber,
+                IsActive = user.IsActive
+            };
+
+            return View(userDetailViewModel);
         }
 
         // Action to show the Create User form

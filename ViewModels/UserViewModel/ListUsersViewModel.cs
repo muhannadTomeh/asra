@@ -13,5 +13,8 @@ namespace Asrati.ViewModels.UserViewModel
         
         [Required]
         public string UserName { get; set; }
+
+        [Required]
+        public bool IsActive { get; set; }
     }
 }
