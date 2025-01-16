@@ -31,7 +31,18 @@
     <!-- Action Buttons -->
     <div class="d-flex justify-content-between mt-3">
         <a href="@Url.Action("ListUsers", "User")" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to User List</a>
-        <a href="@Url.Action("ChangePasswordRequest", "Account")" class="btn btn-warning text-white"><i class="fas fa-key"></i> Change Password</a>
+        
+        <!-- Show Edit button for admin or the logged-in user -->
+        @if (User.IsInRole("Admin") || Model.UserId == User.Identity.Name)
+        {
+            <a href="@Url.Action("EditUser", "User", new { id = Model.UserId })" class="btn btn-primary">
+                <i class="fas fa-edit"></i> Edit User
+            </a>
+        }
+
+        <a href="@Url.Action("ChangePasswordRequest", "Account")" class="btn btn-warning text-white">
+            <i class="fas fa-key"></i> Change Password
+        </a>
     </div>
 </div>
 

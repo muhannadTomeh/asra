@@ -27,7 +27,7 @@
                 <td>@user.IsActive</td>
                 <td>
                     <!-- Edit Button -->
-                    <a href="@Url.Action("Edit", "User", new { id = user.UserId })" class="btn btn-warning">Edit</a>
+                    <a href="@Url.Action("EditUser", "User", new { id = user.UserId })" class="btn btn-warning">Edit</a>
 
                     <!-- Detail Button -->
                     <a href="@Url.Action("UserDetails", "User", new { id = user.UserId })" class="btn btn-info">Detail</a>
