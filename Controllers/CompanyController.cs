@@ -6,6 +6,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Asrati.Data;
+using Asrati.ViewModels.CompanyViewModel;
+using System;
 
 namespace Asrati.Controllers
 {
@@ -43,8 +45,6 @@ namespace Asrati.Controllers
         private async Task<bool> IsUserAuthorized(Company company)
         {
             var loggedInUser = await GetLoggedInUserAsync();
-
-            // Allow access if the logged-in user is the owner or an Admin
             return company.OwnerId == loggedInUser.Id || await IsLoggedInUserAdminAsync();
         }
 
@@ -55,15 +55,16 @@ namespace Asrati.Controllers
         {
             var companies = await _dbContext.Companies.Include(c => c.Owner).ToListAsync();
 
-            var companyViewModels = companies.Select(company => new
+            var companyViewModels = companies.Select(company => new CompanyListViewModel
             {
-                company.Id,
-                company.Name,
-                company.Address,
+                Id = company.Id,
+                Name = company.Name,
+                Address = company.Address,
+                OwnerId = company.OwnerId,
                 OwnerName = company.Owner.UserName,
-                company.IsActive,
-                company.CreatedAt
-            });
+                IsActive = company.IsActive,
+                CreatedAt = company.CreatedAt
+            }).ToList();
 
             return View(companyViewModels);
         }
@@ -84,8 +85,21 @@ namespace Asrati.Controllers
                 return Forbid();
             }
 
-            return View(company);
+            var companyDetailsViewModel = new CompanyDetailsViewModel
+            {
+                Id = company.Id,
+                Name = company.Name,
+                Address = company.Address,
+                OwnerName = company.Owner.UserName,
+                OwnerId = company.Owner.Id,  // Added OwnerId
+                IsActive = company.IsActive,
+                CreatedAt = company.CreatedAt,
+                UpdatedAt = company.UpdatedAt
+            };
+
+            return View(companyDetailsViewModel);
         }
+
 
         // Action to create a new company (Admin or any user)
         [HttpGet]
@@ -96,14 +110,19 @@ namespace Asrati.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateCompany(Company model)
+        public async Task<IActionResult> CreateCompany(CompanyCreateViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            var loggedInUser = await GetLoggedInUserAsync();
+            var owner = await _dbContext.Users.FirstOrDefaultAsync(u => u.PhoneNumber == model.OwnerPhoneNumber);
+            if (owner == null)
+            {
+                ModelState.AddModelError("OwnerPhoneNumber", "No user found with the given phone number.");
+                return View(model);
+            }
 
             var company = new Company
             {
@@ -111,7 +130,7 @@ namespace Asrati.Controllers
                 Address = model.Address,
                 CreatedAt = DateTime.UtcNow,
                 IsActive = model.IsActive,
-                OwnerId = loggedInUser.Id // Set the logged-in user as the owner
+                OwnerId = owner.Id // Assign the owner based on the phone number
             };
 
             _dbContext.Companies.Add(company);
@@ -119,6 +138,7 @@ namespace Asrati.Controllers
 
             return RedirectToAction(nameof(ListCompanies));
         }
+
 
         // Action to edit a company (Admin or owner)
         [HttpGet]
@@ -135,12 +155,21 @@ namespace Asrati.Controllers
                 return Forbid();
             }
 
-            return View(company);
+            var companyEditViewModel = new CompanyEditViewModel
+            {
+                Id = company.Id,
+                Name = company.Name,
+                Address = company.Address,
+                IsActive = company.IsActive,
+                CanEditCompanyDetails = await IsLoggedInUserAdminAsync() || company.OwnerId == (await GetLoggedInUserAsync()).Id
+            };
+
+            return View(companyEditViewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EditCompany(Company model)
+        public async Task<IActionResult> EditCompany(CompanyEditViewModel model)
         {
             if (!ModelState.IsValid)
             {
