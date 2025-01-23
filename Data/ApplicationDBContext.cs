@@ -10,6 +10,9 @@ namespace Asrati.Data
         {
         }
 
+        // DbSet for Company
+        public DbSet<Company> Companies { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -19,11 +22,22 @@ namespace Asrati.Data
                 .HasIndex(u => u.PhoneNumber)
                 .IsUnique();
 
-            // Add unique constraint to PhoneNumber for the Company Model
+            // Add unique constraint to OwnerId for the Company Model
             builder.Entity<Company>()
-                .HasIndex(u => u.PhoneNumber)
+                .HasIndex(c => c.OwnerId)
                 .IsUnique();
 
+            // Configure relationships with cascade delete and update
+            builder.Entity<Company>()
+                .HasOne(c => c.Owner)
+                .WithMany()
+                .HasForeignKey(c => c.OwnerId)
+                .OnDelete(DeleteBehavior.Cascade); // Cascade delete when the owner is deleted
+
+            // Optional: Set cascade update by ensuring the foreign key updates automatically
+            builder.Entity<Company>()
+                .Navigation(c => c.Owner)
+                .IsRequired(); // Ensures the owner is always set
         }
     }
 }
