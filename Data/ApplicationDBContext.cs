@@ -14,12 +14,16 @@ namespace Asrati.Data
         {
             base.OnModelCreating(builder);
 
-            // Add unique constraint to PhoneNumber
+            // Add unique constraint to PhoneNumber for the User Model
             builder.Entity<User>()
                 .HasIndex(u => u.PhoneNumber)
                 .IsUnique();
 
-            // Other configurations
+            // Add unique constraint to PhoneNumber for the Company Model
+            builder.Entity<Company>()
+                .HasIndex(u => u.PhoneNumber)
+                .IsUnique();
+
         }
     }
 }
