@@ -1,0 +1,47 @@
+@model IEnumerable<dynamic>
+
+@{
+    ViewData["Title"] = "Companies List";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@Html.ValidationSummary(true, "Please fix the following errors:", new { @class = "text-danger" })
+
+<table class="table justify-content-center align-items-center">
+    <thead>
+        <tr>
+            <th>Company Name</th>
+            <th>Address</th>
+            <th>Owner</th>
+            <th>Is Active</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var company in Model)
+        {
+            <tr>
+                <td>@company.Name</td>
+                <td>@company.Address</td>
+                <td>@company.OwnerName</td>
+                <td>@company.IsActive</td>
+                <td>
+                    <!-- View Button -->
+                    <a href="@Url.Action("CompanyDetails", "Company", new { id = company.Id })" class="btn btn-info">Details</a>
+
+                    <!-- Edit Button -->
+                    <a href="@Url.Action("EditCompany", "Company", new { id = company.Id })" class="btn btn-warning">Edit</a>
+
+                    <!-- Delete Form -->
+                    <form asp-action="DeleteCompany" method="post" asp-route-id="@company.Id" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a class="nav-link text-dark btn btn-primary text-white" asp-controller="Company" asp-action="CreateCompany">Create New Company</a>

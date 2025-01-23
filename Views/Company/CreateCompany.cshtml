@@ -1,0 +1,38 @@
+@model Asrati.Models.Company
+
+@{
+    ViewData["Title"] = "Create Company";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@Html.ValidationSummary(true, "Please fix the following errors:", new { @class = "text-danger" })
+
+<form asp-action="CreateCompany" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="form-group">
+        <label asp-for="Name" class="control-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Address" class="control-label"></label>
+        <input asp-for="Address" class="form-control" />
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="IsActive" class="control-label">Active</label>
+        <input asp-for="IsActive" type="checkbox" class="form-check-input" />
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Create Company</button>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

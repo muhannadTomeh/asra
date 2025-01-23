@@ -1,0 +1,54 @@
+@model Asrati.Models.Company
+
+@{
+    ViewData["Title"] = "Company Details";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="container mt-4">
+    <div class="card mb-4 shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h4 class="card-title">Company Information</h4>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Name:</strong> @Model.Name</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Address:</strong> @Model.Address</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Owner:</strong> @Model.Owner.UserName</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Status:</strong> @(Model.IsActive ? "Active" : "Inactive")</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="d-flex justify-content-between mt-3">
+        <a href="@Url.Action("ListCompanies", "Company")" class="btn btn-secondary"><i class="fas fa-arrow-left"></i> Back to Company List</a>
+        
+        <!-- Show Edit button for admin or the owner of the company -->
+        @if (User.IsInRole("Admin") || Model.OwnerId == User.Identity.Name)
+        {
+            <a href="@Url.Action("EditCompany", "Company", new { id = Model.Id })" class="btn btn-primary">
+                <i class="fas fa-edit"></i> Edit Company
+            </a>
+        }
+
+        <form asp-action="DeleteCompany" method="post" asp-route-id="@Model.Id" style="display:inline;">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-danger">
+                <i class="fas fa-trash-alt"></i> Delete Company
+            </button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+}
