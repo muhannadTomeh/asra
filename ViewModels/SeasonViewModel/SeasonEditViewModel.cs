@@ -2,13 +2,16 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Asrati.ViewModels.SeasonViewModel
 {
-    public class SeasonCreateViewModel
+    public class SeasonEditViewModel
     {
+        [Required]
+        public int SeasonID { get; set; }
+
         [Required]
         public int CompanyID { get; set; }
 
         [Required]
-        [Range(0, 100, ErrorMessage = "Rid percentage must be between 0 and 100.")]
+        [Range(0, 100, ErrorMessage = "RID Percentage must be between 0 and 100.")]
         public decimal RidPercentage { get; set; }
 
         [Required]
@@ -39,6 +42,7 @@ namespace Asrati.ViewModels.SeasonViewModel
         [Range(0, double.MaxValue, ErrorMessage = "Oil buying cost must be a positive value.")]
         public decimal OilBuyingCost { get; set; }
 
-        public bool IsActiveSeason { get; set; } = true;
+        public bool IsActiveSeason { get; set; }
+        public bool CanEditSeasonDetails { get; set; }
     }
 }

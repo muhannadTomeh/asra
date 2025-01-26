@@ -1,0 +1,92 @@
+@using Asrati.ViewModels.SeasonViewModel
+@model SeasonCreateViewModel
+
+@{
+    ViewData["Title"] = "Create Season";
+}
+
+<h2>@ViewData["Title"]</h2>
+@Html.ValidationSummary(true, "Please fix the following errors:", new { @class = "text-danger" })
+
+<form asp-action="CreateSeason" method="post">
+    @Html.AntiForgeryToken()
+
+    <!-- Company ID (Hidden field) -->
+    <div class="form-group" style="display:none;">
+        <label asp-for="CompanyID" class="control-label">Company ID</label>
+        <input asp-for="CompanyID" class="form-control" />
+        <span asp-validation-for="CompanyID" class="text-danger"></span>
+    </div>
+
+    <!-- RID Percentage field -->
+    <div class="form-group">
+        <label asp-for="RidPercentage" class="control-label">RID Percentage</label>
+        <input asp-for="RidPercentage" class="form-control" />
+        <span asp-validation-for="RidPercentage" class="text-danger"></span>
+    </div>
+
+    <!-- Plastic Tank Cost -->
+    <div class="form-group">
+        <label asp-for="PlasticTankCost" class="control-label">Plastic Tank Cost</label>
+        <input asp-for="PlasticTankCost" class="form-control" />
+        <span asp-validation-for="PlasticTankCost" class="text-danger"></span>
+    </div>
+
+    <!-- Plastic Tank Weight -->
+    <div class="form-group">
+        <label asp-for="PlasticTankWeight" class="control-label">Plastic Tank Weight</label>
+        <input asp-for="PlasticTankWeight" class="form-control" />
+        <span asp-validation-for="PlasticTankWeight" class="text-danger"></span>
+    </div>
+
+    <!-- Steel Tank Cost -->
+    <div class="form-group">
+        <label asp-for="SteelTankCost" class="control-label">Steel Tank Cost</label>
+        <input asp-for="SteelTankCost" class="form-control" />
+        <span asp-validation-for="SteelTankCost" class="text-danger"></span>
+    </div>
+
+    <!-- Steel Tank Weight -->
+    <div class="form-group">
+        <label asp-for="SteelTankWeight" class="control-label">Steel Tank Weight</label>
+        <input asp-for="SteelTankWeight" class="form-control" />
+        <span asp-validation-for="SteelTankWeight" class="text-danger"></span>
+    </div>
+
+    <!-- Service Cost Per Kg -->
+    <div class="form-group">
+        <label asp-for="ServiceCostPerKg" class="control-label">Service Cost Per Kg</label>
+        <input asp-for="ServiceCostPerKg" class="form-control" />
+        <span asp-validation-for="ServiceCostPerKg" class="text-danger"></span>
+    </div>
+
+    <!-- Oil Selling Cost -->
+    <div class="form-group">
+        <label asp-for="OilSellingCost" class="control-label">Oil Selling Cost</label>
+        <input asp-for="OilSellingCost" class="form-control" />
+        <span asp-validation-for="OilSellingCost" class="text-danger"></span>
+    </div>
+
+    <!-- Oil Buying Cost -->
+    <div class="form-group">
+        <label asp-for="OilBuyingCost" class="control-label">Oil Buying Cost</label>
+        <input asp-for="OilBuyingCost" class="form-control" />
+        <span asp-validation-for="OilBuyingCost" class="text-danger"></span>
+    </div>
+
+    <!-- Active Season Checkbox -->
+    <div class="form-group">
+        <label asp-for="IsActiveSeason" class="control-label">Is Active Season</label>
+        <input asp-for="IsActiveSeason" type="checkbox" class="form-check-input" />
+        <span asp-validation-for="IsActiveSeason" class="text-danger"></span>
+    </div>
+
+    <!-- Submit button -->
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Create Season</button>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

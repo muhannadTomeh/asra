@@ -1,0 +1,24 @@
+@model Asrati.ViewModels.SeasonViewModel.SeasonDetailsViewModel
+
+<h2>Season Details</h2>
+
+<div>
+    <h3>Season @Model.SeasonID</h3>
+    <p><strong>Company ID:</strong> @Model.CompanyID</p>
+    <p><strong>RID Percentage:</strong> @Model.RidPercentage</p>
+    <p><strong>Plastic Tank Cost:</strong> @Model.PlasticTankCost</p>
+    <p><strong>Plastic Tank Weight:</strong> @Model.PlasticTankWeight</p>
+    <p><strong>Steel Tank Cost:</strong> @Model.SteelTankCost</p>
+    <p><strong>Steel Tank Weight:</strong> @Model.SteelTankWeight</p>
+    <p><strong>Service Cost Per Kg:</strong> @Model.ServiceCostPerKg</p>
+    <p><strong>Oil Selling Cost:</strong> @Model.OilSellingCost</p>
+    <p><strong>Oil Buying Cost:</strong> @Model.OilBuyingCost</p>
+    <p><strong>Status:</strong> @(Model.IsActiveSeason ? "Active" : "Inactive")</p>
+    <p><strong>Created At:</strong> @Model.CreatedAt</p>
+    <p><strong>Updated At:</strong> @Model.UpdatedAt</p>
+</div>
+
+<a href="@Url.Action("EditSeason", "Season", new { seasonId = Model.SeasonID })">Edit</a> |
+<form action="@Url.Action("DeleteSeason", "Season", new { seasonId = Model.SeasonID })" method="post">
+    <button type="submit" class="btn btn-link">Delete</button>
+</form>
