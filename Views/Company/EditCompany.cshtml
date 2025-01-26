@@ -1,0 +1,52 @@
+@using Asrati.ViewModels.CompanyViewModel
+@model CompanyEditViewModel
+
+@{
+    ViewData["Title"] = "Edit Company";
+}
+
+<h2>@ViewData["Title"]</h2>
+@Html.ValidationSummary(true, "Please fix the following errors:", new { @class = "text-danger" })
+
+<form asp-action="EditCompany" method="post">
+    @Html.AntiForgeryToken()
+
+    <!-- Hidden field for Company Id -->
+    <input type="hidden" asp-for="Id" />
+
+    <!-- Company Name field -->
+    <div class="form-group">
+        <label asp-for="Name" class="control-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+
+    <!-- Company Address field -->
+    <div class="form-group">
+        <label asp-for="Address" class="control-label"></label>
+        <input asp-for="Address" class="form-control" />
+        <span asp-validation-for="Address" class="text-danger"></span>
+    </div>
+
+    <!-- IsActive checkbox -->
+    @if (Model.CanEditCompanyDetails)
+    {
+        <div class="form-group">
+            <label asp-for="IsActive" class="control-label">Active</label>
+            <input asp-for="IsActive" type="checkbox" class="form-check-input" />
+            <span asp-validation-for="IsActive" class="text-danger"></span>
+        </div>
+    }
+    else
+    {
+        <input type="hidden" asp-for="IsActive" />
+    }
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary">Save Changes</button>
+    </div>
+</form>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

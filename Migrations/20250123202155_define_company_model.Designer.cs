@@ -3,6 +3,7 @@ using System;
 using Asrati.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Asrati.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250123202155_define_company_model")]
+    partial class define_company_model
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -54,55 +57,6 @@ namespace Asrati.Migrations
                         .IsUnique();
 
                     b.ToTable("Companies");
-                });
-
-            modelBuilder.Entity("Asrati.Models.Season", b =>
-                {
-                    b.Property<int>("SeasonID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<int>("CompanyID")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<bool>("IsActiveSeason")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<DateTime?>("ModifiedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<decimal>("OilBuyingCost")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<decimal>("OilSellingCost")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<decimal>("PlasticTankCost")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<decimal>("PlasticTankWeight")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<decimal>("RidPercentage")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<decimal>("ServiceCostPerKg")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<decimal>("SteelTankCost")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.Property<decimal>("SteelTankWeight")
-                        .HasColumnType("decimal(65,30)");
-
-                    b.HasKey("SeasonID");
-
-                    b.HasIndex("CompanyID");
-
-                    b.ToTable("Seasons");
                 });
 
             modelBuilder.Entity("Asrati.Models.User", b =>
@@ -312,17 +266,6 @@ namespace Asrati.Migrations
                         .IsRequired();
 
                     b.Navigation("Owner");
-                });
-
-            modelBuilder.Entity("Asrati.Models.Season", b =>
-                {
-                    b.HasOne("Asrati.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

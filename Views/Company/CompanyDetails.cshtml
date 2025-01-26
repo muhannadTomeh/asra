@@ -1,0 +1,24 @@
+@model Asrati.ViewModels.CompanyViewModel.CompanyDetailsViewModel
+
+<h2>Company Details</h2>
+
+<div>
+    <h3>@Model.Name</h3>
+    <p><strong>Address:</strong> @Model.Address</p>
+    <p><strong>Owner:</strong>
+        <a href="@Url.Action("UserDetails", "User", new { id = Model.OwnerId })">
+            @Model.OwnerName
+        </a>
+    </p>
+    <p><strong>Status:</strong> @(Model.IsActive ? "Active" : "Inactive")</p>
+    <p><strong>Created At:</strong> @Model.CreatedAt</p>
+    <p><strong>Updated At:</strong> @Model.UpdatedAt</p>
+</div>
+
+<!-- Button to view the sessions related to this company -->
+<a href="@Url.Action("ListSeasons", "Season", new { companyId = Model.Id })" class="btn btn-primary">View Related Sessions</a>
+
+<a href="@Url.Action("EditCompany", "Company", new { id = Model.Id })">Edit</a> |
+<form action="@Url.Action("DeleteCompany", "Company", new { id = Model.Id })" method="post" style="display:inline;">
+    <button type="submit" class="btn btn-link">Delete</button>
+</form>

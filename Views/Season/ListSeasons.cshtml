@@ -1,0 +1,55 @@
+@model Asrati.ViewModels.SeasonViewModel.SeasonListWithCompanyViewModel
+
+<h2>Seasons for @Model.CompanyName</h2>
+
+<!-- Check if there are any seasons for the company -->
+@if (!Model.Seasons.Any())
+{
+    <div class="alert alert-info">
+        No seasons available for this company. <a href="@Url.Action("CreateSeason", "Season", new { companyId = Model.CompanyId })" class="btn btn-primary">Create New Season</a>
+    </div>
+}
+else
+{
+    <!-- Add Season Button -->
+    <div>
+        <a href="@Url.Action("CreateSeason", "Season", new { companyId = Model.CompanyId })" class="btn btn-primary">Add New Season</a>
+    </div>
+
+    <table class="table mt-3">
+        <thead>
+            <tr>
+                <th>Season ID</th>
+                <th>Rid Percentage</th>
+                <th>Plastic Tank Cost</th>
+                <th>Steel Tank Cost</th>
+                <th>Service Cost per KG</th>
+                <th>Status</th>
+                <th>Created At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var season in Model.Seasons)
+        {
+            <tr>
+                <td>@season.SeasonID</td>
+                <td>@season.RidPercentage</td>
+                <td>@season.PlasticTankCost</td>
+                <td>@season.SteelTankCost</td>
+                <td>@season.ServiceCostPerKg</td>
+                <td>@(season.IsActiveSeason ? "Active" : "Inactive")</td>
+                <td>@season.CreatedAt</td>
+                <td>
+                    <a href="@Url.Action("SeasonDetails", "Season", new { seasonId = season.SeasonID })">Details</a> |
+                    <a href="@Url.Action("EditSeason", "Season", new { seasonId = season.SeasonID })">Edit</a> |
+                    <form action="@Url.Action("DeleteSeason", "Season", new { seasonId = season.SeasonID })" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this season?');">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-link">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}

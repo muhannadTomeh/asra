@@ -1,0 +1,45 @@
+@model IEnumerable<Asrati.ViewModels.CompanyViewModel.CompanyListViewModel>
+
+<h2>Companies</h2>
+
+<!-- Add Company Button -->
+<div>
+    <a href="@Url.Action("CreateCompany", "Company")" class="btn btn-primary">Add New Company</a>
+</div>
+
+<table class="table mt-3">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Owner</th>
+            <th>Status</th>
+            <th>Created At</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var company in Model)
+    {
+        <tr>
+            <td>@company.Name</td>
+            <td>@company.Address</td>
+            <td>
+                <a href="@Url.Action("UserDetails", "User", new { id = company.OwnerId })">
+                    @company.OwnerName
+                </a>
+            </td>
+            <td>@(company.IsActive ? "Active" : "Inactive")</td>
+            <td>@company.CreatedAt</td>
+            <td>
+                <a href="@Url.Action("CompanyDetails", "Company", new { id = company.Id })">Details</a> |
+                <a href="@Url.Action("EditCompany", "Company", new { id = company.Id })">Edit</a> |
+                <form action="@Url.Action("DeleteCompany", "Company", new { id = company.Id })" method="post" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this company?');">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-link">Delete</button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

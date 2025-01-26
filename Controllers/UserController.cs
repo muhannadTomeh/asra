@@ -13,6 +13,7 @@ namespace Asrati.Controllers
     {
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
+        private User _loggedInUser; // Cache the logged-in user for this request
 
         public UserController(UserManager<User> userManager, SignInManager<User> signInManager)
         {
@@ -20,17 +21,30 @@ namespace Asrati.Controllers
             _signInManager = signInManager;
         }
 
-        // Helper function to check if user is authorized to access or edit
-       private async Task<bool> IsUserAuthorized(User user)
+        // Helper to get the logged-in user (cached)
+        private async Task<User> GetLoggedInUserAsync()
         {
-            var loggedInUserId = _userManager.GetUserId(User);  // Get the logged-in user's ID
+            if (_loggedInUser == null)
+            {
+                _loggedInUser = await _userManager.GetUserAsync(User);
+            }
+            return _loggedInUser;
+        }
 
-            // If the user is the same or the logged-in user is an admin, return true
-            if (user.Id == loggedInUserId)
-                return true;
+        // Helper to check if the logged-in user is an Admin
+        private async Task<bool> IsLoggedInUserAdminAsync()
+        {
+            var user = await GetLoggedInUserAsync();
+            return await _userManager.IsInRoleAsync(user, "Admin");
+        }
 
-            // Check if the logged-in user is an admin (no need to find user twice)
-            return await _userManager.IsInRoleAsync(await _userManager.GetUserAsync(User), "Admin");
+        // Helper to check if the logged-in user is authorized to act on another user
+        private async Task<bool> IsUserAuthorized(User user)
+        {
+            var loggedInUser = await GetLoggedInUserAsync();
+
+            // Allow access if the logged-in user is the same or if they are an Admin
+            return user.Id == loggedInUser.Id || await IsLoggedInUserAdminAsync();
         }
 
         // Action to list all users (Admin only)
@@ -55,10 +69,10 @@ namespace Asrati.Controllers
         [HttpGet]
         public async Task<IActionResult> UserDetails(string id = null)
         {
-            var loggedInUserId = _userManager.GetUserId(User);
-            id ??= loggedInUserId; // Use current user's ID if none is provided
+            var loggedInUser = await GetLoggedInUserAsync();
+            id ??= loggedInUser.Id; // Default to logged-in user's ID if no ID is provided
 
-            var user = await GetUserDetailsAsync(id);
+            var user = await _userManager.FindByIdAsync(id);
             if (user == null)
             {
                 return View("NotFound");
@@ -84,8 +98,8 @@ namespace Asrati.Controllers
         [HttpGet]
         public async Task<IActionResult> EditUser(string id = null)
         {
-            var loggedInUserId = _userManager.GetUserId(User);
-            id ??= loggedInUserId;  // Use the current user's ID if none is provided
+            var loggedInUser = await GetLoggedInUserAsync();
+            id ??= loggedInUser.Id; // Default to logged-in user's ID if no ID is provided
 
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
@@ -93,28 +107,22 @@ namespace Asrati.Controllers
                 return View("NotFound");
             }
 
-            // Only allow the logged-in user or admin to edit the details
             if (!await IsUserAuthorized(user))
             {
                 return Forbid();
             }
 
-            // Get the logged-in user object to check for admin role
-            var loggedInUser = await _userManager.GetUserAsync(User);
-
-            // Populate the ViewModel with current user data and set permissions
             var userEditViewModel = new UserEditViewModel
             {
                 UserId = user.Id,
                 UserName = user.UserName,
                 PhoneNumber = user.PhoneNumber,
                 IsActive = user.IsActive,
-                CanEditUserDetails = user.Id == loggedInUserId || await _userManager.IsInRoleAsync(loggedInUser, "Admin")
+                CanEditUserDetails = user.Id == loggedInUser.Id || await IsLoggedInUserAdminAsync()
             };
 
             return View(userEditViewModel);
         }
-
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -131,14 +139,11 @@ namespace Asrati.Controllers
                 return View("NotFound");
             }
 
-            // Only allow the logged-in user or admin to edit the details
-            var loggedInUserId = _userManager.GetUserId(User);
             if (!await IsUserAuthorized(user))
             {
                 return Forbid();
             }
 
-            // Update user information
             user.UserName = model.UserName;
             user.PhoneNumber = model.PhoneNumber;
             user.IsActive = model.IsActive;
@@ -158,19 +163,12 @@ namespace Asrati.Controllers
             return View(model);
         }
 
-        // Helper method to retrieve user details
-        private async Task<User> GetUserDetailsAsync(string id)
-        {
-            return await _userManager.FindByIdAsync(id);
-        }
-
-        // Action to handle deleting a user (Admin only)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id = null)
         {
-            var loggedInUserId = _userManager.GetUserId(User);
-            id ??= loggedInUserId;
+            var loggedInUser = await GetLoggedInUserAsync();
+            id ??= loggedInUser.Id;
 
             var user = await _userManager.FindByIdAsync(id);
             if (user == null)
