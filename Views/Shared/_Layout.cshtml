@@ -1,4 +1,13 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.EntityFrameworkCore
+@inject Microsoft.AspNetCore.Identity.UserManager<Asrati.Models.User> UserManager
+@inject Asrati.Data.ApplicationDbContext DbContext
+@{
+    var user = await UserManager.GetUserAsync(User); 
+    var isAdmin = user != null && await UserManager.IsInRoleAsync(user, "Admin");
+    var company = user != null ? await DbContext.Companies.FirstOrDefaultAsync(c => c.OwnerId == user.Id) : null;
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -25,13 +34,26 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="ListUsers">Users</a>
-                        </li>
-                        <!-- Add link to list of companies -->
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Company" asp-action="ListCompanies">Companies</a>
-                        </li>
+                        @if (isAdmin)
+                        {
+                            <!-- Links for Admin users -->
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="User" asp-action="ListUsers">Users</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Company" asp-action="ListCompanies">Companies</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <!-- Link for non-admin users (My Company) -->
+                            @if (company != null)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Company" asp-action="CompanyDetails" asp-route-id="@company.Id">My Company</a>
+                                </li>
+                            }
+                        }
                         <partial name="_LoginPartial" />
                     </ul>
                 </div>
