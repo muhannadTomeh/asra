@@ -13,6 +13,9 @@ namespace Asrati.Data
         // DbSet for Company
         public DbSet<Company> Companies { get; set; }
 
+        // DbSet for Season
+        public DbSet<Season> Seasons { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -27,7 +30,7 @@ namespace Asrati.Data
                 .HasIndex(c => c.OwnerId)
                 .IsUnique();
 
-            // Configure relationships with cascade delete and update
+            // Configure relationships with cascade delete and update for Company
             builder.Entity<Company>()
                 .HasOne(c => c.Owner)
                 .WithMany()
@@ -38,6 +41,13 @@ namespace Asrati.Data
             builder.Entity<Company>()
                 .Navigation(c => c.Owner)
                 .IsRequired(); // Ensures the owner is always set
+
+            // Configure relationships for the Season model
+            builder.Entity<Season>()
+                .HasOne(s => s.Company) // A season belongs to a company
+                .WithMany() // A company can have many seasons
+                .HasForeignKey(s => s.CompanyID)
+                .OnDelete(DeleteBehavior.Cascade); // Cascade delete when the company is deleted
         }
     }
 }
