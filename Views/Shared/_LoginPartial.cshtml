@@ -5,25 +5,24 @@
     @if (signInManager.IsSignedIn(User))
     {
         <li class="nav-item">
+            <a class="nav-link text-dark" asp-controller="User" asp-action="UserDetails">حسابي</a>
+        </li>
+        <li class="nav-item">
             <form asp-controller="Account" asp-action="Logout" method="post">
                 @Html.AntiForgeryToken()
                 <button type="submit" class="btn btn-link nav-link text-dark">
-                    Logout
+                    تسجيل الخروج
                 </button>
             </form>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link text-dark" asp-controller="User" asp-action="UserDetails">My Account</a>
         </li>
     }
     else
     {
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">Login</a>
+            <a class="nav-link text-dark" asp-controller="Account" asp-action="Login">تسجيل الدخول</a>
         </li>
-
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">Register</a>
+            <a class="nav-link text-dark" asp-controller="Account" asp-action="Register">إنشاء حساب</a>
         </li>
     }
 </ul>
