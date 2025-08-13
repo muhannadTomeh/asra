@@ -10,31 +10,37 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddIdentity<User, IdentityRole>(options =>
 {
-    // Require confirmed phone number
     options.SignIn.RequireConfirmedPhoneNumber = false;
-
-    // Disable email-related requirements
     options.SignIn.RequireConfirmedEmail = false;
 })
 .AddEntityFrameworkStores<ApplicationDbContext>()
 .AddDefaultTokenProviders();
 
+// Resolve connection string (prefer env SUPABASE_CONNECTION_STRING)
+var configured = builder.Configuration.GetConnectionString("DefaultConnection");
+var supabaseEnv = builder.Configuration["SUPABASE_CONNECTION_STRING"] ?? Environment.GetEnvironmentVariable("SUPABASE_CONNECTION_STRING");
+var connectionString = string.IsNullOrWhiteSpace(supabaseEnv) ? configured : supabaseEnv;
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseMySql(
-        builder.Configuration.GetConnectionString("DefaultConnection"),
-        ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
-    ));
+    options.UseNpgsql(connectionString));
 
 var app = builder.Build();
+
+// Apply migrations on startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
-} else {
+}
+else
+{
     app.UseDeveloperExceptionPage();
 }
 
@@ -47,12 +53,10 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseStatusCodePagesWithReExecute("/Home/Error/{0}");
 
-// Attribute-routed API controllers
 app.MapControllers();
 
-// MVC conventional route
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}"); 
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
