@@ -1,0 +1,79 @@
+:root {
+  --primary-color: #1B5E20;
+  --secondary-color: #2E7D32;
+  --light-green: #4CAF50;
+  --danger-color: #D32F2F;
+  --warning-color: #FFA000;
+  --success-color: #388E3C;
+  --text-color: #333;
+  --bg-light: #F5F5F5;
+}
+
+body {
+  direction: rtl;
+  font-family: 'Cairo', sans-serif;
+  background-color: var(--bg-light);
+}
+
+.sidebar {
+  background-color: var(--primary-color);
+  min-height: 100vh;
+  padding: 1rem;
+  color: white;
+}
+
+.main-content {
+  padding: 2rem;
+}
+
+.stats-card {
+  background: white;
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  margin-bottom: 1rem;
+}
+
+.data-table {
+  width: 100%;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.data-table th {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 1rem;
+}
+
+.status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 50px;
+  font-size: 0.875rem;
+}
+
+.status-badge.pending {
+  background-color: var(--warning-color);
+  color: white;
+}
+
+.status-badge.completed {
+  background-color: var(--success-color);
+  color: white;
+}
+
+.status-badge.cancelled {
+  background-color: var(--danger-color);
+  color: white;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+}
