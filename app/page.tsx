@@ -10,19 +10,11 @@ import Link from "next/link"
 import { useEffect } from "react"
 
 export default function HomePage() {
-  const router = useRouter()
-  const { user, roles, loading } = useAuth()
+  const { user, roles } = useAuth()
   const isAdmin = roles.includes("Admin")
 
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push("/login")
-    }
-  }, [loading, user, router])
-
-  if (loading || !user) {
-    return null
-  }
+  // Demo user for preview
+  const displayUser = user || { id: "demo-1", userName: "مستخدم تجريبي" }
 
   const stats = [
     {
