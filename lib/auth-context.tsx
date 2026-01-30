@@ -23,28 +23,26 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "/api"
 
+// Demo mode - bypass authentication temporarily
+const DEMO_USER: AuthUser = {
+  id: "demo-user-1",
+  userName: "مستخدم تجريبي",
+  phoneNumber: "0501234567",
+  isActive: true,
+}
+const DEMO_ROLES = ["Admin", "User"]
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<AuthUser | null>(null)
-  const [roles, setRoles] = useState<string[]>([])
-  const [loading, setLoading] = useState(true)
+  // Set demo user by default for preview
+  const [user, setUser] = useState<AuthUser | null>(DEMO_USER)
+  const [roles, setRoles] = useState<string[]>(DEMO_ROLES)
+  const [loading, setLoading] = useState(false)
 
   const refresh = useCallback(async () => {
-    try {
-      const res = await fetch(`${API_BASE}/auth/me`, { credentials: "include" })
-      if (res.ok) {
-        const data = await res.json()
-        setUser(data.user)
-        setRoles(data.roles || [])
-      } else {
-        setUser(null)
-        setRoles([])
-      }
-    } catch {
-      setUser(null)
-      setRoles([])
-    } finally {
-      setLoading(false)
-    }
+    // Demo mode - always return demo user
+    setUser(DEMO_USER)
+    setRoles(DEMO_ROLES)
+    setLoading(false)
   }, [])
 
   useEffect(() => {
